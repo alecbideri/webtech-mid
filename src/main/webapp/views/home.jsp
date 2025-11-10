@@ -20,7 +20,7 @@
 <body>
 
 
-<nav class="navbar navbar-expand-lg navbar-light bg-warning">
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ff6600;">
 	<div class="container">
 		<a class="navbar-brand fs-1 fw-medium" href="#">Amazon     Job Portal Web App</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"

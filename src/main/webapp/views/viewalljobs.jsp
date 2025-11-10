@@ -18,10 +18,9 @@
 </head>
 <body>
 
-
-<nav class="navbar navbar-expand-lg navbar-light bg-warning">
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ff6600;">
     <div class="container">
-        <a class="navbar-brand fs-1 fw-medium" href="#">Telusko Job Portal Web App</a>
+        <a class="navbar-brand fs-1 fw-medium" href="#">Amazon Job Portal Web App</a>
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false"
@@ -38,7 +37,6 @@
         </div>
     </div>
 </nav>
-
 
 <div class="container mt-5">
     <h2 class="mb-4 text-center font-weight-bold">Job Post List</h2>
@@ -67,8 +65,10 @@
                         </ul>
                         </p>
                     </div>
-                    <div class="card-footer">
-                        <!-- Optional footer content -->
+                    <div class="card-footer d-flex justify-content-between">
+                        <a href="editjob?id=${jobPost.postId}" class="btn btn-primary btn-sm">Edit</a>
+                        <a href="deletejob?id=${jobPost.postId}" class="btn btn-danger btn-sm"
+                           onclick="return confirm('Are you sure you want to delete this job?')">Delete</a>
                     </div>
                 </div>
             </div>
