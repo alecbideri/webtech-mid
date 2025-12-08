@@ -1,64 +1,60 @@
 package com.alec.FindJobApp.controller;
 
-import com.alec.FindJobApp.model.JobPost;
+import com.alec.FindJobApp.model.Job;
+import com.alec.FindJobApp.model.User;
 import com.alec.FindJobApp.service.JobService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/api/jobs")
+@RequiredArgsConstructor
 public class JobController {
 
-    @Autowired
-    private JobService service;
+    private final JobService jobService;
 
-    @GetMapping({"/", "home"})
-    public String home() {
-        return "home";
+    @GetMapping
+    public ResponseEntity<List<Job>> getAllJobs() {
+        return ResponseEntity.ok(jobService.findAllJobs());
     }
 
-    @GetMapping("addjob")
-    public String addJob() {
-        return "addjob";
+    @GetMapping("/{id}")
+    public ResponseEntity<Job> getJobById(@PathVariable Long id) {
+        return ResponseEntity.ok(jobService.findJobById(id));
     }
 
-    @PostMapping("handleForm")
-    public String handleForm(JobPost jobPost) {
-        service.addJob(jobPost);
-        return "success";
+    @PostMapping
+    @PreAuthorize("hasRole('JOB_CREATOR')")
+    public ResponseEntity<Job> createJob(@RequestBody Job job, @AuthenticationPrincipal UserDetails userDetails) {
+        User creator = (User) userDetails;
+        return ResponseEntity.ok(jobService.createJob(job, creator));
     }
 
-    @GetMapping("viewalljobs")
-    public String viewJobs(Model m) {
-        List<JobPost> jobs = service.getAllJobs();
-        m.addAttribute("jobPosts", jobs);
-        return "viewalljobs";
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('JOB_CREATOR')")
+    public ResponseEntity<Job> updateJob(@PathVariable Long id, @RequestBody Job job,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        User creator = (User) userDetails;
+        return ResponseEntity.ok(jobService.updateJob(id, job, creator));
     }
 
-    // GET mapping to load the edit form with existing job data
-    @GetMapping("editjob")
-    public String editJob(@RequestParam int id, Model m) {
-        JobPost job = service.getJob(id);
-        m.addAttribute("jobPost", job);
-        return "editjob";
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteJob(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        User requestor = (User) userDetails;
+        jobService.deleteJob(id, requestor);
+        return ResponseEntity.ok("Job deleted successfully");
     }
 
-    // POST mapping to handle the update
-    @PostMapping("updatejob")
-    public String updateJob(JobPost jobPost) {
-        service.updateJob(jobPost);
-        return "redirect:/viewalljobs";
-    }
-
-    // GET mapping to delete a job
-    @GetMapping("deletejob")
-    public String deleteJob(@RequestParam int id) {
-        service.deleteJob(id);
-        return "redirect:/viewalljobs";
+    @GetMapping("/my-jobs")
+    @PreAuthorize("hasRole('JOB_CREATOR')")
+    public ResponseEntity<List<Job>> getMyJobs(@AuthenticationPrincipal UserDetails userDetails) {
+        User creator = (User) userDetails;
+        return ResponseEntity.ok(jobService.findJobsByCreator(creator));
     }
 }

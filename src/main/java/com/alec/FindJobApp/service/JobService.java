@@ -1,39 +1,61 @@
 package com.alec.FindJobApp.service;
 
-import com.alec.FindJobApp.model.JobPost;
-import com.alec.FindJobApp.repo.JobRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.alec.FindJobApp.model.Job;
+import com.alec.FindJobApp.model.User;
+import com.alec.FindJobApp.repository.JobRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class JobService {
-    @Autowired
-    public JobRepo repo;
 
-    // method to add a jobPost
-    public void addJob(JobPost jobPost) {
-        repo.addJob(jobPost);
+    private final JobRepository jobRepository;
+
+    public Job createJob(Job job, User creator) {
+        if (!creator.isVerified()) {
+            throw new RuntimeException("Creator not verified by Admin yet.");
+        }
+        job.setCreator(creator);
+        return jobRepository.save(job);
     }
 
-    // method to return all JobPosts
-    public List<JobPost> getAllJobs() {
-        return repo.getAllJobs();
+    public List<Job> findAllJobs() {
+        return jobRepository.findAll();
     }
 
-    // method to get a single job by ID
-    public JobPost getJob(int postId) {
-        return repo.getJob(postId);
+    public List<Job> findJobsByCreator(User creator) {
+        return jobRepository.findByCreator(creator);
     }
 
-    // method to update a job post
-    public void updateJob(JobPost jobPost) {
-        repo.updateJob(jobPost);
+    public Job findJobById(Long id) {
+        return jobRepository.findById(id).orElseThrow(() -> new RuntimeException("Job not found"));
     }
 
-    // method to delete a job post
-    public void deleteJob(int postId) {
-        repo.deleteJob(postId);
+    public Job updateJob(Long id, Job updatedJob, User creator) {
+        Job job = findJobById(id);
+        if (!job.getCreator().getId().equals(creator.getId())) {
+            throw new RuntimeException("Unauthorized to update this job");
+        }
+        job.setTitle(updatedJob.getTitle());
+        job.setDescription(updatedJob.getDescription());
+        job.setLocation(updatedJob.getLocation());
+        job.setType(updatedJob.getType());
+        return jobRepository.save(job);
+    }
+
+    public void deleteJob(Long id, User requestor) {
+        Job job = findJobById(id);
+        // Allow Creator who owns it OR Sysadmin to delete
+        boolean isOwner = job.getCreator().getId().equals(requestor.getId());
+        boolean isAdmin = requestor.getRole().name().equals("SYSADMIN");
+
+        if (!isOwner && !isAdmin) {
+            throw new RuntimeException("Unauthorized to delete this job");
+        }
+
+        jobRepository.delete(job);
     }
 }
