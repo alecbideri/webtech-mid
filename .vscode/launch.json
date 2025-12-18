@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "FindJobApp",
+      "request": "launch",
+      "mainClass": "com.alec.FindJobApp.FindJobAppApplication",
+      "projectName": "FindJobApp",
+      "cwd": "${workspaceFolder}/backend/FindJobApp"
+    }
+  ]
+}
