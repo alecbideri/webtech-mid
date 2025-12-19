@@ -16,10 +16,17 @@ import lombok.NoArgsConstructor;
 public class AuthResponse {
 
   private String token;
+  @Builder.Default
   private String type = "Bearer";
   private Long id;
   private String email;
   private String firstName;
   private String lastName;
   private Role role;
+
+  // Flags for special auth flows
+  @Builder.Default
+  private Boolean requires2FA = false;
+  @Builder.Default
+  private Boolean requiresApproval = false;
 }

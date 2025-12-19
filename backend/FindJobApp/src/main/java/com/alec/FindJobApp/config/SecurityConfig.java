@@ -1,7 +1,10 @@
 package com.alec.FindJobApp.config;
 
+import com.alec.FindJobApp.security.CustomOAuth2UserService;
 import com.alec.FindJobApp.security.JwtAuthFilter;
+import com.alec.FindJobApp.security.OAuth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +32,7 @@ import java.util.List;
 
 /**
  * Security configuration for the application.
- * Configures JWT authentication, CORS, and role-based access control.
+ * Configures JWT authentication, OAuth2, CORS, and role-based access control.
  */
 @Configuration
 @EnableWebSecurity
@@ -40,8 +43,17 @@ public class SecurityConfig {
   private final JwtAuthFilter jwtAuthFilter;
   private final UserDetailsService userDetailsService;
 
+  @Autowired(required = false)
+  private CustomOAuth2UserService customOAuth2UserService;
+
+  @Autowired(required = false)
+  private OAuth2AuthenticationSuccessHandler oAuth2SuccessHandler;
+
   @Value("${app.cors.allowed-origins}")
   private String allowedOrigins;
+
+  @Value("${app.oauth2.enabled:false}")
+  private boolean oauth2Enabled;
 
   /**
    * Configures the security filter chain.
@@ -54,6 +66,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             // Public endpoints
             .requestMatchers("/api/auth/**").permitAll()
+            .requestMatchers("/login/oauth2/**", "/oauth2/**").permitAll()
             .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
 
@@ -73,6 +86,14 @@ public class SecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider())
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+    // OAuth2 Login Configuration - only if enabled and services are available
+    if (oauth2Enabled && customOAuth2UserService != null && oAuth2SuccessHandler != null) {
+      http.oauth2Login(oauth2 -> oauth2
+          .userInfoEndpoint(userInfo -> userInfo
+              .userService(customOAuth2UserService))
+          .successHandler(oAuth2SuccessHandler));
+    }
 
     return http.build();
   }

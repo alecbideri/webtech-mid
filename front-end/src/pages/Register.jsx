@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import GoogleLoginButton from '../components/common/GoogleLoginButton';
 
 /**
  * Register page component
@@ -75,6 +76,24 @@ export default function Register() {
               {error}
             </div>
           )}
+
+          {/* Google Sign-Up */}
+          <div className="mb-6">
+            <GoogleLoginButton text="Sign up with Google" />
+            <p className="text-xs text-slate-500 mt-2 text-center">
+              Quick sign up as a Job Seeker. You can update your role later.
+            </p>
+          </div>
+
+          {/* Divider */}
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-slate-500">or register with email</span>
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -151,8 +170,8 @@ export default function Register() {
                   type="button"
                   onClick={() => setFormData({ ...formData, role: 'SEEKER' })}
                   className={`py-3 px-4 rounded-lg border-2 transition-colors ${formData.role === 'SEEKER'
-                      ? 'border-blue-600 bg-blue-50 text-blue-700'
-                      : 'border-slate-200 hover:border-slate-300'
+                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                    : 'border-slate-200 hover:border-slate-300'
                     }`}
                 >
                   <div className="font-medium">Job Seeker</div>
@@ -162,8 +181,8 @@ export default function Register() {
                   type="button"
                   onClick={() => setFormData({ ...formData, role: 'RECRUITER' })}
                   className={`py-3 px-4 rounded-lg border-2 transition-colors ${formData.role === 'RECRUITER'
-                      ? 'border-blue-600 bg-blue-50 text-blue-700'
-                      : 'border-slate-200 hover:border-slate-300'
+                    ? 'border-blue-600 bg-blue-50 text-blue-700'
+                    : 'border-slate-200 hover:border-slate-300'
                     }`}
                 >
                   <div className="font-medium">Recruiter</div>
@@ -192,3 +211,4 @@ export default function Register() {
     </div>
   );
 }
+

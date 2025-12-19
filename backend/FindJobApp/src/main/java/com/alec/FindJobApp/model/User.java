@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 /**
  * User entity representing all users in the system.
  * Supports three roles: ADMIN, RECRUITER, and SEEKER.
+ * Supports both local and OAuth (Google) authentication.
  */
 @Entity
 @Table(name = "users")
@@ -42,9 +43,8 @@ public class User {
   @Column(nullable = false, unique = true)
   private String email;
 
-  @NotBlank(message = "Password is required")
   @Size(min = 6, message = "Password must be at least 6 characters")
-  @Column(nullable = false)
+  @Column(nullable = true)
   private String password;
 
   @Enumerated(EnumType.STRING)
@@ -54,6 +54,49 @@ public class User {
   @Column(name = "is_active")
   @Builder.Default
   private Boolean isActive = true;
+
+  // Profile fields
+  @Column(name = "phone")
+  private String phone;
+
+  @Column(name = "bio", columnDefinition = "TEXT")
+  private String bio;
+
+  @Column(name = "company")
+  private String company;
+
+  @Column(name = "location")
+  private String location;
+
+  @Column(name = "linkedin_url")
+  private String linkedinUrl;
+
+  // Approval system (only applies to recruiters)
+  @Column(name = "is_approved")
+  @Builder.Default
+  private Boolean isApproved = true;
+
+  // OAuth fields
+  @Column(name = "provider")
+  @Builder.Default
+  private String provider = "local";
+
+  @Column(name = "provider_id")
+  private String providerId;
+
+  @Column(name = "profile_image_url")
+  private String profileImageUrl;
+
+  // 2FA fields (email OTP)
+  @Column(name = "two_factor_enabled")
+  @Builder.Default
+  private Boolean twoFactorEnabled = false;
+
+  @Column(name = "otp_code")
+  private String otpCode;
+
+  @Column(name = "otp_expiry")
+  private LocalDateTime otpExpiry;
 
   @CreationTimestamp
   @Column(name = "created_at", updatable = false)
@@ -68,5 +111,19 @@ public class User {
    */
   public String getFullName() {
     return firstName + " " + lastName;
+  }
+
+  /**
+   * Checks if user authenticated via OAuth.
+   */
+  public boolean isOAuthUser() {
+    return provider != null && !provider.equals("local");
+  }
+
+  /**
+   * Checks if user requires approval (only recruiters).
+   */
+  public boolean requiresApproval() {
+    return role == Role.RECRUITER && (isApproved == null || !isApproved);
   }
 }

@@ -61,18 +61,86 @@ public class EmailService {
    */
   public void sendWelcomeEmail(String to, String name, String role) {
     String subject = "Welcome to Find Job App!";
+    String roleMessage = role.equals("RECRUITER")
+        ? "Your account is pending admin approval. You will receive an email once approved."
+        : "You can now browse jobs and submit applications.";
     String body = String.format(
         "Dear %s,\n\n" +
             "Welcome to Find Job App! Your account has been successfully created.\n\n" +
             "Account Type: %s\n\n" +
-            "You can now %s\n\n" +
+            "%s\n\n" +
             "Best regards,\n" +
             "The Find Job App Team",
         name,
         role,
-        role.equals("RECRUITER")
-            ? "post jobs and manage applications."
-            : "browse jobs and submit applications.");
+        roleMessage);
+    sendEmail(to, subject, body);
+  }
+
+  /**
+   * Sends password reset email with reset link.
+   */
+  public void sendPasswordResetEmail(String to, String name, String resetLink) {
+    String subject = "Password Reset Request - Find Job App";
+    String body = String.format(
+        "Dear %s,\n\n" +
+            "We received a request to reset your password for your Find Job App account.\n\n" +
+            "Click the link below to reset your password:\n" +
+            "%s\n\n" +
+            "This link will expire in 30 minutes.\n\n" +
+            "If you did not request a password reset, please ignore this email.\n\n" +
+            "Best regards,\n" +
+            "The Find Job App Team",
+        name,
+        resetLink);
+    sendEmail(to, subject, body);
+  }
+
+  /**
+   * Sends OTP code email for 2FA.
+   */
+  public void sendOtpEmail(String to, String name, String otpCode) {
+    String subject = "Your Login Verification Code - Find Job App";
+    String body = String.format(
+        "Dear %s,\n\n" +
+            "Your verification code is: %s\n\n" +
+            "This code will expire in 5 minutes.\n\n" +
+            "If you did not request this code, please secure your account immediately.\n\n" +
+            "Best regards,\n" +
+            "The Find Job App Team",
+        name,
+        otpCode);
+    sendEmail(to, subject, body);
+  }
+
+  /**
+   * Sends approval notification to recruiters.
+   */
+  public void sendRecruiterApprovalEmail(String to, String name) {
+    String subject = "Your Recruiter Account Has Been Approved! - Find Job App";
+    String body = String.format(
+        "Dear %s,\n\n" +
+            "Great news! Your recruiter account has been approved by our admin team.\n\n" +
+            "You can now log in and start posting jobs on Find Job App.\n\n" +
+            "Get started by visiting our website and logging in with your credentials.\n\n" +
+            "Best regards,\n" +
+            "The Find Job App Team",
+        name);
+    sendEmail(to, subject, body);
+  }
+
+  /**
+   * Sends rejection notification to recruiters.
+   */
+  public void sendRecruiterRejectionEmail(String to, String name) {
+    String subject = "Recruiter Account Application Update - Find Job App";
+    String body = String.format(
+        "Dear %s,\n\n" +
+            "We regret to inform you that your recruiter account application has not been approved.\n\n" +
+            "If you have any questions, please contact our support team.\n\n" +
+            "Best regards,\n" +
+            "The Find Job App Team",
+        name);
     sendEmail(to, subject, body);
   }
 }

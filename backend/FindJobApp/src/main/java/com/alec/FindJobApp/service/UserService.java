@@ -112,4 +112,18 @@ public class UserService {
     User user = getUserById(id);
     userRepository.delete(user);
   }
+
+  /**
+   * Searches users by first name, last name, or email.
+   */
+  public Page<UserDTO> searchUsers(String query, Pageable pageable) {
+    return userRepository.searchUsers(query, pageable).map(this::toDTO);
+  }
+
+  /**
+   * Searches users by query and filters by role.
+   */
+  public Page<UserDTO> searchUsersByRole(String query, Role role, Pageable pageable) {
+    return userRepository.searchUsersByRole(query, role, pageable).map(this::toDTO);
+  }
 }

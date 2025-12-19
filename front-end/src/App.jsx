@@ -1,12 +1,19 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { useState } from 'react';
 import Header from './components/common/Header';
+import Sidebar from './components/common/Sidebar';
+import Footer from './components/common/Footer';
 
 // Pages
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import OAuthCallback from './pages/OAuthCallback';
 import Jobs from './pages/Jobs';
+import Profile from './pages/Profile';
 import SeekerDashboard from './pages/seeker/Dashboard';
 import RecruiterDashboard from './pages/recruiter/Dashboard';
 import PostJob from './pages/recruiter/PostJob';
@@ -33,14 +40,24 @@ function ProtectedRoute({ children, allowedRoles = [] }) {
 }
 
 /**
- * Layout component with Header
+ * Layout component with Header, Sidebar, and Footer
  */
-function Layout({ children }) {
+function Layout({ children, showSidebar = false, showFooter = true }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
-    <>
-      <Header />
-      <main>{children}</main>
-    </>
+    <div className="min-h-screen flex flex-col">
+      <Header onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
+      <div className="flex flex-1">
+        {showSidebar && (
+          <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+        )}
+        <main className={`flex-1 ${showSidebar ? 'lg:ml-64' : ''}`}>
+          {children}
+        </main>
+      </div>
+      {showFooter && <Footer />}
+    </div>
   );
 }
 
@@ -53,17 +70,30 @@ function App() {
       <AuthProvider>
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<Layout><Landing /></Layout>} />
+          <Route path="/" element={<Layout showFooter={true}><Landing /></Layout>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/jobs" element={<Layout><Jobs /></Layout>} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/oauth/callback" element={<OAuthCallback />} />
+          <Route path="/jobs" element={<Layout showFooter={true}><Jobs /></Layout>} />
+
+          {/* Profile route - accessible by all authenticated users */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute allowedRoles={['SEEKER', 'RECRUITER', 'ADMIN']}>
+                <Layout showSidebar={true} showFooter={false}><Profile /></Layout>
+              </ProtectedRoute>
+            }
+          />
 
           {/* Seeker routes */}
           <Route
             path="/seeker/dashboard"
             element={
               <ProtectedRoute allowedRoles={['SEEKER']}>
-                <Layout><SeekerDashboard /></Layout>
+                <Layout showSidebar={true} showFooter={false}><SeekerDashboard /></Layout>
               </ProtectedRoute>
             }
           />
@@ -73,7 +103,7 @@ function App() {
             path="/recruiter/dashboard"
             element={
               <ProtectedRoute allowedRoles={['RECRUITER']}>
-                <Layout><RecruiterDashboard /></Layout>
+                <Layout showSidebar={true} showFooter={false}><RecruiterDashboard /></Layout>
               </ProtectedRoute>
             }
           />
@@ -81,7 +111,7 @@ function App() {
             path="/recruiter/post-job"
             element={
               <ProtectedRoute allowedRoles={['RECRUITER']}>
-                <Layout><PostJob /></Layout>
+                <Layout showSidebar={true} showFooter={false}><PostJob /></Layout>
               </ProtectedRoute>
             }
           />
@@ -89,7 +119,7 @@ function App() {
             path="/recruiter/jobs/:jobId/applications"
             element={
               <ProtectedRoute allowedRoles={['RECRUITER']}>
-                <Layout><ManageApplications /></Layout>
+                <Layout showSidebar={true} showFooter={false}><ManageApplications /></Layout>
               </ProtectedRoute>
             }
           />
@@ -99,7 +129,7 @@ function App() {
             path="/admin/dashboard"
             element={
               <ProtectedRoute allowedRoles={['ADMIN']}>
-                <Layout><AdminDashboard /></Layout>
+                <Layout showSidebar={true} showFooter={false}><AdminDashboard /></Layout>
               </ProtectedRoute>
             }
           />
@@ -113,3 +143,5 @@ function App() {
 }
 
 export default App;
+
+
