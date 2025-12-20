@@ -20,7 +20,6 @@ export default function Sidebar({ isOpen, onToggle }) {
       case 'ADMIN':
         return [
           { path: '/admin/dashboard', label: 'Dashboard', icon: '📊' },
-          { path: '/admin/users', label: 'Manage Users', icon: '👥' },
           ...commonItems,
         ];
       case 'RECRUITER':

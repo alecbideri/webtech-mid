@@ -45,6 +45,15 @@ const jobService = {
     const response = await api.delete(`/jobs/${id}`);
     return response.data;
   },
+
+  async getOpenJobsByType(jobType, page = 0, size = 10) {
+    let url = `/jobs/open/filter?page=${page}&size=${size}`;
+    if (jobType) {
+      url += `&jobType=${jobType}`;
+    }
+    const response = await api.get(url);
+    return response.data;
+  },
 };
 
 export default jobService;

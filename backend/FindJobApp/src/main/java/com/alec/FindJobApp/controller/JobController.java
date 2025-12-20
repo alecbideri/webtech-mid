@@ -4,6 +4,7 @@ import com.alec.FindJobApp.dto.ApiResponse;
 import com.alec.FindJobApp.dto.JobDTO;
 import com.alec.FindJobApp.dto.JobRequest;
 import com.alec.FindJobApp.model.JobStatus;
+import com.alec.FindJobApp.model.JobType;
 import com.alec.FindJobApp.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,13 @@ public class JobController {
       @RequestParam String keyword,
       @PageableDefault(size = 10) Pageable pageable) {
     return ResponseEntity.ok(ApiResponse.success(jobService.searchJobs(keyword, pageable)));
+  }
+
+  @GetMapping("/open/filter")
+  public ResponseEntity<ApiResponse<Page<JobDTO>>> getOpenJobsByType(
+      @RequestParam(required = false) JobType jobType,
+      @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    return ResponseEntity.ok(ApiResponse.success(jobService.getOpenJobsByType(jobType, pageable)));
   }
 
   @GetMapping("/{id}")

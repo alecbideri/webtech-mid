@@ -1,14 +1,22 @@
 package com.alec.FindJobApp.controller;
 
 import com.alec.FindJobApp.dto.ApiResponse;
+import com.alec.FindJobApp.dto.ApplicationDTO;
+import com.alec.FindJobApp.dto.JobDTO;
 import com.alec.FindJobApp.dto.UserDTO;
 import com.alec.FindJobApp.model.Role;
 import com.alec.FindJobApp.model.User;
+import com.alec.FindJobApp.model.Job;
+import com.alec.FindJobApp.model.Application;
+import com.alec.FindJobApp.repository.ApplicationRepository;
+import com.alec.FindJobApp.repository.JobRepository;
 import com.alec.FindJobApp.repository.UserRepository;
 import com.alec.FindJobApp.service.EmailService;
 import com.alec.FindJobApp.service.UserService;
+import com.alec.FindJobApp.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -16,7 +24,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,7 +37,10 @@ public class AdminController {
 
   private final UserService userService;
   private final UserRepository userRepository;
+  private final JobRepository jobRepository;
+  private final ApplicationRepository applicationRepository;
   private final EmailService emailService;
+  private final JobService jobService;
 
   @GetMapping("/users")
   public ResponseEntity<ApiResponse<Page<UserDTO>>> getAllUsers(
@@ -123,5 +136,45 @@ public class AdminController {
   public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable Long id) {
     userService.deleteUser(id);
     return ResponseEntity.ok(ApiResponse.success("User deleted", null));
+  }
+
+  @GetMapping("/stats")
+  public ResponseEntity<ApiResponse<Map<String, Long>>> getDashboardStats() {
+    Map<String, Long> stats = new HashMap<>();
+    stats.put("totalJobs", jobRepository.count());
+    stats.put("totalApplications", applicationRepository.count());
+    stats.put("totalRecruiters", userRepository.countByRole(Role.RECRUITER));
+    stats.put("totalSeekers", userRepository.countByRole(Role.SEEKER));
+    return ResponseEntity.ok(ApiResponse.success(stats));
+  }
+
+  @GetMapping("/recent-jobs")
+  public ResponseEntity<ApiResponse<List<JobDTO>>> getRecentJobs() {
+    Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "createdAt"));
+    Page<Job> jobs = jobRepository.findAll(pageable);
+    List<JobDTO> jobDTOs = jobs.getContent().stream()
+        .map(jobService::toDTO)
+        .collect(Collectors.toList());
+    return ResponseEntity.ok(ApiResponse.success(jobDTOs));
+  }
+
+  @GetMapping("/recent-applications")
+  public ResponseEntity<ApiResponse<List<ApplicationDTO>>> getRecentApplications() {
+    Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.DESC, "appliedAt"));
+    Page<Application> applications = applicationRepository.findAll(pageable);
+    List<ApplicationDTO> applicationDTOs = applications.getContent().stream()
+        .map(app -> ApplicationDTO.builder()
+            .id(app.getId())
+            .jobId(app.getJob().getId())
+            .jobTitle(app.getJob().getTitle())
+            .company(app.getJob().getCompany())
+            .seekerId(app.getSeeker().getId())
+            .seekerName(app.getSeeker().getFullName())
+            .seekerEmail(app.getSeeker().getEmail())
+            .status(app.getStatus())
+            .appliedAt(app.getAppliedAt())
+            .build())
+        .collect(Collectors.toList());
+    return ResponseEntity.ok(ApiResponse.success(applicationDTOs));
   }
 }

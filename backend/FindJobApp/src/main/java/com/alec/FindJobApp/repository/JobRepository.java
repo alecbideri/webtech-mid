@@ -31,4 +31,6 @@ public interface JobRepository extends JpaRepository<Job, Long> {
   Page<Job> findByLocationContainingIgnoreCase(String location, Pageable pageable);
 
   long countByRecruiter(User recruiter);
+
+  Page<Job> findByStatusAndJobType(JobStatus status, JobType jobType, Pageable pageable);
 }

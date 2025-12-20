@@ -14,6 +14,7 @@ export default function Jobs() {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [jobTypeFilter, setJobTypeFilter] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
   const { isAuthenticated, hasRole } = useAuth();
 
@@ -26,7 +27,7 @@ export default function Jobs() {
 
   useEffect(() => {
     loadJobs();
-  }, [currentPage, searchParams]);
+  }, [currentPage, searchParams, jobTypeFilter]);
 
   const loadJobs = async () => {
     setLoading(true);
@@ -37,6 +38,8 @@ export default function Jobs() {
       let result;
       if (keyword) {
         result = await jobService.searchJobs(keyword, currentPage);
+      } else if (jobTypeFilter) {
+        result = await jobService.getOpenJobsByType(jobTypeFilter, currentPage);
       } else {
         result = await jobService.getOpenJobs(currentPage);
       }
@@ -60,6 +63,13 @@ export default function Jobs() {
     } else {
       setSearchParams({});
     }
+  };
+
+  const handleJobTypeChange = (e) => {
+    setJobTypeFilter(e.target.value);
+    setCurrentPage(0);
+    setSearchParams({});
+    setSearchKeyword('');
   };
 
   const handleApply = (job) => {
@@ -100,18 +110,32 @@ export default function Jobs() {
     <div className="min-h-screen bg-slate-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <form onSubmit={handleSearch} className="flex gap-4">
-            <input
-              type="text"
-              placeholder="Search jobs by title, company, or location..."
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              className="flex-1 input-field"
-            />
-            <button type="submit" className="btn-primary px-6">
-              Search
-            </button>
-          </form>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <form onSubmit={handleSearch} className="flex gap-4 flex-1">
+              <input
+                type="text"
+                placeholder="Search jobs by title, company, or location..."
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="flex-1 input-field"
+              />
+              <button type="submit" className="btn-primary px-6">
+                Search
+              </button>
+            </form>
+            <select
+              value={jobTypeFilter}
+              onChange={handleJobTypeChange}
+              className=" border border-slate-300 rounded px-4 py-2 w-[150px]"
+            >
+              <option value="">All Job Types</option>
+              <option value="FULL_TIME">Full Time</option>
+              <option value="PART_TIME">Part Time</option>
+              <option value="CONTRACT">Contract</option>
+              <option value="INTERNSHIP">Internship</option>
+              <option value="REMOTE">Remote</option>
+            </select>
+          </div>
         </div>
 
         {loading ? (

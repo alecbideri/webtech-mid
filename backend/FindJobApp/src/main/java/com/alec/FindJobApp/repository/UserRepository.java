@@ -41,4 +41,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
   Page<User> searchUsersByRole(@Param("query") String query, @Param("role") Role role, Pageable pageable);
 
   Optional<User> findByProviderAndProviderId(String provider, String providerId);
+
+  long countByRole(Role role);
 }

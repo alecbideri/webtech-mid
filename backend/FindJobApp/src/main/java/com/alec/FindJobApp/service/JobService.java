@@ -6,6 +6,7 @@ import com.alec.FindJobApp.exception.BadRequestException;
 import com.alec.FindJobApp.exception.ResourceNotFoundException;
 import com.alec.FindJobApp.model.Job;
 import com.alec.FindJobApp.model.JobStatus;
+import com.alec.FindJobApp.model.JobType;
 import com.alec.FindJobApp.model.Role;
 import com.alec.FindJobApp.model.User;
 import com.alec.FindJobApp.repository.JobRepository;
@@ -86,6 +87,16 @@ public class JobService {
 
   public Page<JobDTO> searchJobs(String keyword, Pageable pageable) {
     return jobRepository.searchJobs(keyword, pageable).map(this::toDTO);
+  }
+
+  public Page<JobDTO> getOpenJobsByType(JobType jobType, Pageable pageable) {
+    Page<Job> jobs;
+    if (jobType != null) {
+      jobs = jobRepository.findByStatusAndJobType(JobStatus.OPEN, jobType, pageable);
+    } else {
+      jobs = jobRepository.findByStatusOrderByCreatedAtDesc(JobStatus.OPEN, pageable);
+    }
+    return jobs.map(this::toDTO);
   }
 
   public Page<JobDTO> getMyJobs(Pageable pageable) {

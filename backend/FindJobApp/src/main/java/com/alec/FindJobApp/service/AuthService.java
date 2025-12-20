@@ -99,6 +99,10 @@ public class AuthService {
     User user = userRepository.findByEmail(request.getEmail())
         .orElseThrow(() -> new BadRequestException("User not found"));
 
+    if (!Boolean.TRUE.equals(user.getIsActive())) {
+      throw new BadRequestException("Your account has been deactivated. Please contact support.");
+    }
+
     if (user.requiresApproval()) {
       throw new BadRequestException("Your recruiter account is pending approval. Please wait for admin approval.");
     }
@@ -134,6 +138,10 @@ public class AuthService {
   public AuthResponse verifyOtpAndLogin(String email, String otpCode) {
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new BadRequestException("User not found"));
+
+    if (!Boolean.TRUE.equals(user.getIsActive())) {
+      throw new BadRequestException("Your account has been deactivated. Please contact support.");
+    }
 
     if (!otpService.verifyOtp(user, otpCode)) {
       throw new BadRequestException("Invalid or expired OTP code");
