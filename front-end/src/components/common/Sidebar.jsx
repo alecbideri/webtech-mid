@@ -2,9 +2,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useState } from 'react';
 
-/**
- * Sidebar component with role-based navigation
- */
 export default function Sidebar({ isOpen, onToggle }) {
   const { user, isAuthenticated } = useAuth();
   const location = useLocation();
@@ -46,7 +43,6 @@ export default function Sidebar({ isOpen, onToggle }) {
 
   return (
     <>
-      {/* Mobile overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -54,7 +50,6 @@ export default function Sidebar({ isOpen, onToggle }) {
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`
           fixed top-16 left-0 h-[calc(100vh-4rem)] bg-white border-r border-slate-200 z-50
@@ -63,7 +58,6 @@ export default function Sidebar({ isOpen, onToggle }) {
           ${collapsed ? 'w-16' : 'w-64'}
         `}
       >
-        {/* Collapse toggle (desktop only) */}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className="hidden lg:flex absolute -right-3 top-4 w-6 h-6 bg-white border border-slate-200 rounded-full items-center justify-center text-slate-500 hover:text-slate-700 shadow-sm"
@@ -71,7 +65,6 @@ export default function Sidebar({ isOpen, onToggle }) {
           {collapsed ? '→' : '←'}
         </button>
 
-        {/* Navigation */}
         <nav className="p-4 space-y-2">
           {navItems.map((item) => (
             <Link
@@ -93,7 +86,6 @@ export default function Sidebar({ isOpen, onToggle }) {
           ))}
         </nav>
 
-        {/* User info at bottom */}
         {!collapsed && (
           <div className="absolute bottom-4 left-4 right-4 p-3 bg-slate-50 rounded-lg">
             <div className="flex items-center gap-3">

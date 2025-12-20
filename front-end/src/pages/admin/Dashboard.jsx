@@ -4,9 +4,6 @@ import Spinner from '../../components/common/Spinner';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
-/**
- * Admin Dashboard - Manage all users
- */
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +14,6 @@ export default function AdminDashboard() {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const { user } = useAuth();
 
-  // Debounce search query
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery);
@@ -35,7 +31,6 @@ export default function AdminDashboard() {
     try {
       let url;
       if (debouncedSearch) {
-        // Search endpoint
         url = `/admin/users/search?q=${encodeURIComponent(debouncedSearch)}&page=${currentPage}&size=10`;
         if (roleFilter) {
           url += `&role=${roleFilter}`;
@@ -113,7 +108,6 @@ export default function AdminDashboard() {
             <p className="text-slate-600 mt-2">Welcome, {user?.firstName}! Manage all users here.</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search Input */}
             <div className="relative">
               <input
                 type="text"
@@ -144,7 +138,6 @@ export default function AdminDashboard() {
                 </button>
               )}
             </div>
-            {/* Role Filter */}
             <select
               value={roleFilter}
               onChange={(e) => { setRoleFilter(e.target.value); setCurrentPage(0); }}
@@ -158,7 +151,6 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Search results indicator */}
         {debouncedSearch && (
           <div className="mb-4 text-sm text-slate-600">
             Showing results for "<span className="font-medium">{debouncedSearch}</span>"
@@ -254,4 +246,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-

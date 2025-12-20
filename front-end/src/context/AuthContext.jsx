@@ -1,17 +1,12 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import authService from '../services/authService';
 
-// Create the auth context
 const AuthContext = createContext(null);
 
-/**
- * AuthProvider component that wraps the app and provides auth state
- */
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Load user from localStorage on mount
   useEffect(() => {
     const storedUser = authService.getCurrentUser();
     if (storedUser) {
@@ -20,9 +15,6 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  /**
-   * Login function
-   */
   const login = async (credentials) => {
     const result = await authService.login(credentials);
     if (result.success) {
@@ -31,9 +23,6 @@ export function AuthProvider({ children }) {
     return result;
   };
 
-  /**
-   * Register function
-   */
   const register = async (userData) => {
     const result = await authService.register(userData);
     if (result.success) {
@@ -42,17 +31,11 @@ export function AuthProvider({ children }) {
     return result;
   };
 
-  /**
-   * Logout function
-   */
   const logout = () => {
     authService.logout();
     setUser(null);
   };
 
-  /**
-   * Check if user has a specific role
-   */
   const hasRole = (role) => {
     return user?.role === role;
   };
@@ -75,9 +58,6 @@ export function AuthProvider({ children }) {
   );
 }
 
-/**
- * Custom hook to use the auth context
- */
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {

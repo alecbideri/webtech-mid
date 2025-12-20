@@ -8,9 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-/**
- * Application entity representing a job seeker's application to a job.
- */
 @Entity
 @Table(name = "applications", uniqueConstraints = {
     @UniqueConstraint(columnNames = { "job_id", "seeker_id" })

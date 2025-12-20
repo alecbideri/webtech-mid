@@ -16,9 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-/**
- * JWT authentication filter that validates tokens on each request.
- */
 @Component
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -26,9 +23,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
   private final JwtUtils jwtUtils;
   private final UserDetailsService userDetailsService;
 
-  /**
-   * Filters each request to validate JWT token.
-   */
   @Override
   protected void doFilterInternal(
       @NonNull HttpServletRequest request,
@@ -39,7 +33,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     final String jwt;
     final String userEmail;
 
-    // Skip if no Authorization header or doesn't start with Bearer
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
       filterChain.doFilter(request, response);
       return;
@@ -50,11 +43,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     try {
       userEmail = jwtUtils.extractUsername(jwt);
 
-      // If we have a username and no authentication exists
       if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-        // Validate the token
         if (jwtUtils.validateToken(jwt, userDetails)) {
           UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
               userDetails,
@@ -65,7 +56,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
       }
     } catch (Exception e) {
-      // Invalid token - continue without authentication
       logger.error("Cannot set user authentication: " + e.getMessage());
     }
 

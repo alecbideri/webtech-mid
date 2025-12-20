@@ -10,9 +10,6 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/**
- * DTO for job data responses.
- */
 @Data
 @Builder
 @NoArgsConstructor

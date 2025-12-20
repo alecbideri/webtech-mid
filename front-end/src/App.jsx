@@ -5,7 +5,6 @@ import Header from './components/common/Header';
 import Sidebar from './components/common/Sidebar';
 import Footer from './components/common/Footer';
 
-// Pages
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -20,9 +19,6 @@ import PostJob from './pages/recruiter/PostJob';
 import ManageApplications from './pages/recruiter/ManageApplications';
 import AdminDashboard from './pages/admin/Dashboard';
 
-/**
- * Protected Route component - requires authentication
- */
 function ProtectedRoute({ children, allowedRoles = [] }) {
   const { isAuthenticated, user, loading } = useAuth();
 
@@ -39,9 +35,6 @@ function ProtectedRoute({ children, allowedRoles = [] }) {
   return children;
 }
 
-/**
- * Layout component with Header, Sidebar, and Footer
- */
 function Layout({ children, showSidebar = false, showFooter = true }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -61,15 +54,11 @@ function Layout({ children, showSidebar = false, showFooter = true }) {
   );
 }
 
-/**
- * Main App component
- */
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Public routes */}
           <Route path="/" element={<Layout showFooter={true}><Landing /></Layout>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -78,7 +67,6 @@ function App() {
           <Route path="/oauth/callback" element={<OAuthCallback />} />
           <Route path="/jobs" element={<Layout showFooter={true}><Jobs /></Layout>} />
 
-          {/* Profile route - accessible by all authenticated users */}
           <Route
             path="/profile"
             element={
@@ -88,7 +76,6 @@ function App() {
             }
           />
 
-          {/* Seeker routes */}
           <Route
             path="/seeker/dashboard"
             element={
@@ -98,7 +85,6 @@ function App() {
             }
           />
 
-          {/* Recruiter routes */}
           <Route
             path="/recruiter/dashboard"
             element={
@@ -124,7 +110,6 @@ function App() {
             }
           />
 
-          {/* Admin routes */}
           <Route
             path="/admin/dashboard"
             element={
@@ -134,7 +119,6 @@ function App() {
             }
           />
 
-          {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
@@ -143,5 +127,3 @@ function App() {
 }
 
 export default App;
-
-

@@ -1,9 +1,5 @@
-/**
- * Google Login Button component
- */
 export default function GoogleLoginButton({ text = 'Continue with Google' }) {
   const handleGoogleLogin = () => {
-    // Redirect to backend OAuth2 authorization endpoint
     window.location.href = 'http://localhost:8080/oauth2/authorization/google';
   };
 

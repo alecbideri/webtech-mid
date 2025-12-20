@@ -8,9 +8,6 @@ import jobService from '../services/jobService';
 import applicationService from '../services/applicationService';
 import { useAuth } from '../context/AuthContext';
 
-/**
- * Jobs listing page
- */
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +17,6 @@ export default function Jobs() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { isAuthenticated, hasRole } = useAuth();
 
-  // Apply modal state
   const [applyModal, setApplyModal] = useState({ open: false, job: null });
   const [coverLetter, setCoverLetter] = useState('');
   const [resume, setResume] = useState(null);
@@ -28,7 +24,6 @@ export default function Jobs() {
   const [applySuccess, setApplySuccess] = useState('');
   const [applyError, setApplyError] = useState('');
 
-  // Load jobs
   useEffect(() => {
     loadJobs();
   }, [currentPage, searchParams]);
@@ -104,7 +99,6 @@ export default function Jobs() {
   return (
     <div className="min-h-screen bg-slate-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Search Bar */}
         <div className="mb-8">
           <form onSubmit={handleSearch} className="flex gap-4">
             <input
@@ -120,7 +114,6 @@ export default function Jobs() {
           </form>
         </div>
 
-        {/* Jobs List */}
         {loading ? (
           <div className="py-16">
             <Spinner size="lg" />
@@ -142,7 +135,6 @@ export default function Jobs() {
           </div>
         )}
 
-        {/* Pagination */}
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
@@ -150,7 +142,6 @@ export default function Jobs() {
         />
       </div>
 
-      {/* Apply Modal */}
       <Modal
         isOpen={applyModal.open}
         onClose={() => setApplyModal({ open: false, job: null })}

@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-/**
- * Reusable Modal component
- */
 export default function Modal({ isOpen, onClose, title, children, size = 'md' }) {
   if (!isOpen) return null;
 
@@ -15,18 +12,15 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' })
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 transition-opacity"
         onClick={onClose}
       />
 
-      {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
         <div
           className={`relative ${sizeClasses[size]} w-full bg-white rounded-xl shadow-xl transform transition-all`}
         >
-          {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-slate-200">
             <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
             <button
@@ -39,7 +33,6 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' })
             </button>
           </div>
 
-          {/* Content */}
           <div className="p-6">{children}</div>
         </div>
       </div>

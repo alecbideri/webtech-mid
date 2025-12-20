@@ -13,9 +13,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-/**
- * DTO for job creation/update requests.
- */
 @Data
 @Builder
 @NoArgsConstructor

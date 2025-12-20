@@ -1,15 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-/**
- * Landing page component
- */
 export default function Landing() {
   const { isAuthenticated, user } = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-      {/* Hero Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
         <div className="text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-slate-800 mb-6">
@@ -36,7 +32,6 @@ export default function Landing() {
           </div>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
           <div className="card text-center">
             <div className="text-4xl font-bold text-blue-600 mb-2">1000+</div>
@@ -53,7 +48,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="bg-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center text-slate-800 mb-12">
@@ -94,7 +88,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold text-slate-800 mb-4">
@@ -111,7 +104,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-slate-800 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">

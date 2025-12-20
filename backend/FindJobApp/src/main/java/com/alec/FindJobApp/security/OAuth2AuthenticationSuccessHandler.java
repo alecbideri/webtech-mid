@@ -20,10 +20,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.util.Map;
 
-/**
- * Handles successful OAuth2 authentication by creating/updating user and
- * redirecting with JWT.
- */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -47,11 +43,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     String providerId = (String) attributes.get("sub");
     String picture = (String) attributes.get("picture");
 
-    // Extract name with defaults
     String givenName = (String) attributes.get("given_name");
     String familyName = (String) attributes.get("family_name");
 
-    // Default values if not provided
     final String finalFirstName;
     final String finalLastName;
 
@@ -70,7 +64,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
       }
     }
 
-    // Find or create user
     User user = userRepository.findByEmail(email)
         .orElseGet(() -> {
           log.info("Creating new OAuth user: {}", email);
@@ -81,13 +74,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
               .provider("google")
               .providerId(providerId)
               .profileImageUrl(picture)
-              .role(Role.SEEKER) // Default role for new OAuth users
+              .role(Role.SEEKER)
               .isActive(true)
               .build();
           return userRepository.save(newUser);
         });
 
-    // Update OAuth info if existing user linked to local account
     if (user.getProvider() == null || user.getProvider().equals("local")) {
       user.setProvider("google");
       user.setProviderId(providerId);
@@ -95,11 +87,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
       userRepository.save(user);
     }
 
-    // Generate JWT token
     UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
     String token = jwtUtils.generateToken(userDetails);
 
-    // Build redirect URL with token
     String redirectUrl = UriComponentsBuilder.fromUriString(frontendUrl + "/oauth/callback")
         .queryParam("token", token)
         .queryParam("id", user.getId())

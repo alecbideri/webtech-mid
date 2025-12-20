@@ -2,9 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jobService from '../../services/jobService';
 
-/**
- * Post Job page for recruiters
- */
 export default function PostJob() {
   const [formData, setFormData] = useState({
     title: '',

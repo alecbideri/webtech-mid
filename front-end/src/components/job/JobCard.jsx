@@ -1,8 +1,5 @@
 import { Link } from 'react-router-dom';
 
-/**
- * JobCard component for displaying job listings
- */
 export default function JobCard({ job, showApplyButton = false, onApply }) {
   const formatSalary = (salary) => {
     if (!salary) return 'Not specified';

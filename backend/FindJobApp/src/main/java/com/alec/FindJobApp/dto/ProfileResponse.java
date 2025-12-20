@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-/**
- * DTO for returning user profile data.
- */
 @Data
 @Builder
 @NoArgsConstructor

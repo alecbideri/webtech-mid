@@ -1,6 +1,3 @@
-/**
- * Reusable Spinner/Loading component
- */
 export default function Spinner({ size = 'md', className = '' }) {
   const sizeClasses = {
     sm: 'w-4 h-4',
@@ -17,9 +14,6 @@ export default function Spinner({ size = 'md', className = '' }) {
   );
 }
 
-/**
- * Full page loader
- */
 export function PageLoader() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">

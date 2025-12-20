@@ -11,24 +11,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
-/**
- * Custom UserDetailsService implementation for Spring Security.
- */
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
   private final UserRepository userRepository;
 
-  /**
-   * Loads user by email for authentication.
-   */
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     User user = userRepository.findByEmail(email)
         .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-    // Use empty password placeholder for OAuth users (they have null password)
     String password = user.getPassword() != null ? user.getPassword() : "";
 
     return new org.springframework.security.core.userdetails.User(

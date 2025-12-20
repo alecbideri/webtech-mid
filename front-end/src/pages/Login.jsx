@@ -4,9 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import GoogleLoginButton from '../components/common/GoogleLoginButton';
 import { authApi } from '../services/profileApi';
 
-/**
- * Login page component with 2FA support
- */
 export default function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [otpCode, setOtpCode] = useState('');
@@ -19,7 +16,6 @@ export default function Login() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // Check for OAuth error
   const oauthError = searchParams.get('error');
 
   const handleChange = (e) => {
@@ -37,7 +33,6 @@ export default function Login() {
       if (result.success) {
         const data = result.data;
 
-        // Check if 2FA is required
         if (data.requires2FA) {
           setRequires2FA(true);
           setPendingEmail(formData.email);
@@ -46,7 +41,6 @@ export default function Login() {
           return;
         }
 
-        // Redirect based on role
         const role = data.role;
         if (role === 'ADMIN') {
           navigate('/admin/dashboard');
@@ -75,12 +69,10 @@ export default function Login() {
       if (response.success) {
         const data = response.data;
 
-        // Store token and user data
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data));
         setUser(data);
 
-        // Redirect based on role
         const role = data.role;
         if (role === 'ADMIN') {
           navigate('/admin/dashboard');
@@ -139,7 +131,6 @@ export default function Login() {
           )}
 
           {requires2FA ? (
-            // 2FA Verification Form
             <form onSubmit={handleOtpSubmit} className="space-y-6">
               <div>
                 <label className="label" htmlFor="otpCode">Verification Code</label>
@@ -178,12 +169,10 @@ export default function Login() {
             </form>
           ) : (
             <>
-              {/* Google Sign-In */}
               <div className="mb-6">
                 <GoogleLoginButton text="Sign in with Google" />
               </div>
 
-              {/* Divider */}
               <div className="relative mb-6">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-slate-200"></div>
@@ -249,5 +238,3 @@ export default function Login() {
     </div>
   );
 }
-
-

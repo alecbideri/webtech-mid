@@ -7,9 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO for verifying OTP during 2FA login.
- */
 @Data
 @Builder
 @NoArgsConstructor

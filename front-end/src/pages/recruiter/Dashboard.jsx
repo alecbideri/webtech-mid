@@ -5,9 +5,6 @@ import Spinner from '../../components/common/Spinner';
 import jobService from '../../services/jobService';
 import { useAuth } from '../../context/AuthContext';
 
-/**
- * Recruiter Dashboard - Manage job postings
- */
 export default function RecruiterDashboard() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);

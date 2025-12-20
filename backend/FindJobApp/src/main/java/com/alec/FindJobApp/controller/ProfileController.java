@@ -13,9 +13,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Controller for user profile management.
- */
 @RestController
 @RequestMapping("/api/profile")
 @RequiredArgsConstructor
@@ -24,9 +21,6 @@ public class ProfileController {
   private final UserRepository userRepository;
   private final OtpService otpService;
 
-  /**
-   * Get current user's profile.
-   */
   @GetMapping
   public ResponseEntity<ApiResponse<ProfileResponse>> getProfile(
       @AuthenticationPrincipal UserDetails userDetails) {
@@ -37,9 +31,6 @@ public class ProfileController {
     return ResponseEntity.ok(ApiResponse.success("Profile retrieved", profile));
   }
 
-  /**
-   * Update current user's profile.
-   */
   @PutMapping
   public ResponseEntity<ApiResponse<ProfileResponse>> updateProfile(
       @AuthenticationPrincipal UserDetails userDetails,
@@ -47,7 +38,6 @@ public class ProfileController {
     User user = userRepository.findByEmail(userDetails.getUsername())
         .orElseThrow(() -> new RuntimeException("User not found"));
 
-    // Update only non-null fields
     if (request.getFirstName() != null) {
       user.setFirstName(request.getFirstName());
     }
@@ -75,9 +65,6 @@ public class ProfileController {
     return ResponseEntity.ok(ApiResponse.success("Profile updated", profile));
   }
 
-  /**
-   * Enable 2FA for the current user.
-   */
   @PostMapping("/2fa/enable")
   public ResponseEntity<ApiResponse<Void>> enable2FA(
       @AuthenticationPrincipal UserDetails userDetails) {
@@ -90,9 +77,6 @@ public class ProfileController {
     return ResponseEntity.ok(ApiResponse.success("Two-factor authentication enabled", null));
   }
 
-  /**
-   * Disable 2FA for the current user.
-   */
   @PostMapping("/2fa/disable")
   public ResponseEntity<ApiResponse<Void>> disable2FA(
       @AuthenticationPrincipal UserDetails userDetails) {

@@ -4,9 +4,6 @@ import Spinner from '../../components/common/Spinner';
 import applicationService from '../../services/applicationService';
 import { useAuth } from '../../context/AuthContext';
 
-/**
- * Seeker Dashboard - View and manage applications
- */
 export default function SeekerDashboard() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);

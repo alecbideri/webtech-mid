@@ -1,6 +1,3 @@
-/**
- * Reusable Pagination component
- */
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
   if (totalPages <= 1) return null;
 
@@ -19,7 +16,6 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
 
   return (
     <div className="flex items-center justify-center space-x-2 mt-8">
-      {/* Previous Button */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 0}
@@ -28,7 +24,6 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
         Previous
       </button>
 
-      {/* Page Numbers */}
       {startPage > 0 && (
         <>
           <button
@@ -46,8 +41,8 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
           key={page}
           onClick={() => onPageChange(page)}
           className={`px-3 py-2 rounded-lg transition-colors ${page === currentPage
-              ? 'bg-blue-600 text-white'
-              : 'border border-slate-300 text-slate-600 hover:bg-slate-100'
+            ? 'bg-blue-600 text-white'
+            : 'border border-slate-300 text-slate-600 hover:bg-slate-100'
             }`}
         >
           {page + 1}
@@ -66,7 +61,6 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
         </>
       )}
 
-      {/* Next Button */}
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages - 1}

@@ -10,11 +10,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-/**
- * User entity representing all users in the system.
- * Supports three roles: ADMIN, RECRUITER, and SEEKER.
- * Supports both local and OAuth (Google) authentication.
- */
 @Entity
 @Table(name = "users")
 @Getter
@@ -55,7 +50,6 @@ public class User {
   @Builder.Default
   private Boolean isActive = true;
 
-  // Profile fields
   @Column(name = "phone")
   private String phone;
 
@@ -71,12 +65,10 @@ public class User {
   @Column(name = "linkedin_url")
   private String linkedinUrl;
 
-  // Approval system (only applies to recruiters)
   @Column(name = "is_approved")
   @Builder.Default
   private Boolean isApproved = true;
 
-  // OAuth fields
   @Column(name = "provider")
   @Builder.Default
   private String provider = "local";
@@ -87,7 +79,6 @@ public class User {
   @Column(name = "profile_image_url")
   private String profileImageUrl;
 
-  // 2FA fields (email OTP)
   @Column(name = "two_factor_enabled")
   @Builder.Default
   private Boolean twoFactorEnabled = false;
@@ -106,23 +97,14 @@ public class User {
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
-  /**
-   * Returns the full name of the user.
-   */
   public String getFullName() {
     return firstName + " " + lastName;
   }
 
-  /**
-   * Checks if user authenticated via OAuth.
-   */
   public boolean isOAuthUser() {
     return provider != null && !provider.equals("local");
   }
 
-  /**
-   * Checks if user requires approval (only recruiters).
-   */
   public boolean requiresApproval() {
     return role == Role.RECRUITER && (isApproved == null || !isApproved);
   }

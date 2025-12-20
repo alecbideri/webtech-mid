@@ -8,9 +8,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-/**
- * Service for sending email notifications.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -21,9 +18,6 @@ public class EmailService {
   @Value("${spring.mail.username}")
   private String fromEmail;
 
-  /**
-   * Sends a simple email asynchronously.
-   */
   @Async
   public void sendEmail(String to, String subject, String body) {
     try {
@@ -39,9 +33,6 @@ public class EmailService {
     }
   }
 
-  /**
-   * Sends application status update email.
-   */
   public void sendApplicationStatusEmail(String to, String seekerName, String jobTitle,
       String company, String status) {
     String subject = "Application Status Update - " + jobTitle;
@@ -56,9 +47,6 @@ public class EmailService {
     sendEmail(to, subject, body);
   }
 
-  /**
-   * Sends welcome email to new users.
-   */
   public void sendWelcomeEmail(String to, String name, String role) {
     String subject = "Welcome to Find Job App!";
     String roleMessage = role.equals("RECRUITER")
@@ -77,9 +65,6 @@ public class EmailService {
     sendEmail(to, subject, body);
   }
 
-  /**
-   * Sends password reset email with reset link.
-   */
   public void sendPasswordResetEmail(String to, String name, String resetLink) {
     String subject = "Password Reset Request - Find Job App";
     String body = String.format(
@@ -96,9 +81,6 @@ public class EmailService {
     sendEmail(to, subject, body);
   }
 
-  /**
-   * Sends OTP code email for 2FA.
-   */
   public void sendOtpEmail(String to, String name, String otpCode) {
     String subject = "Your Login Verification Code - Find Job App";
     String body = String.format(
@@ -113,9 +95,6 @@ public class EmailService {
     sendEmail(to, subject, body);
   }
 
-  /**
-   * Sends approval notification to recruiters.
-   */
   public void sendRecruiterApprovalEmail(String to, String name) {
     String subject = "Your Recruiter Account Has Been Approved! - Find Job App";
     String body = String.format(
@@ -129,9 +108,6 @@ public class EmailService {
     sendEmail(to, subject, body);
   }
 
-  /**
-   * Sends rejection notification to recruiters.
-   */
   public void sendRecruiterRejectionEmail(String to, String name) {
     String subject = "Recruiter Account Application Update - Find Job App";
     String body = String.format(

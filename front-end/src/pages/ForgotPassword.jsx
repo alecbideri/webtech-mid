@@ -2,9 +2,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 
-/**
- * Forgot Password page component
- */
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -48,7 +45,7 @@ export default function ForgotPassword() {
               </div>
               <h2 className="text-2xl font-bold text-slate-800 mb-2">Check your email</h2>
               <p className="text-slate-600 mb-6">
-                We've sent a password reset link to <strong>{email}</strong>. 
+                We've sent a password reset link to <strong>{email}</strong>.
                 The link will expire in 30 minutes.
               </p>
               <Link to="/login" className="btn-primary inline-block">

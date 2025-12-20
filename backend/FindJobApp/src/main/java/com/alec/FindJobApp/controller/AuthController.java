@@ -13,9 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Controller for authentication endpoints.
- */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -23,9 +20,6 @@ public class AuthController {
 
   private final AuthService authService;
 
-  /**
-   * Registers a new user.
-   */
   @PostMapping("/register")
   public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {
     AuthResponse response = authService.register(request);
@@ -35,9 +29,6 @@ public class AuthController {
     return ResponseEntity.ok(ApiResponse.success(message, response));
   }
 
-  /**
-   * Authenticates a user and returns a JWT token.
-   */
   @PostMapping("/login")
   public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
     AuthResponse response = authService.login(request);
@@ -47,27 +38,18 @@ public class AuthController {
     return ResponseEntity.ok(ApiResponse.success(message, response));
   }
 
-  /**
-   * Verifies OTP code and completes 2FA login.
-   */
   @PostMapping("/verify-otp")
   public ResponseEntity<ApiResponse<AuthResponse>> verifyOtp(@Valid @RequestBody OtpVerifyRequest request) {
     AuthResponse response = authService.verifyOtpAndLogin(request.getEmail(), request.getOtpCode());
     return ResponseEntity.ok(ApiResponse.success("Login successful", response));
   }
 
-  /**
-   * Initiates password reset by sending email with reset link.
-   */
   @PostMapping("/forgot-password")
   public ResponseEntity<ApiResponse<Void>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
     authService.forgotPassword(request.getEmail());
     return ResponseEntity.ok(ApiResponse.success("Password reset email sent", null));
   }
 
-  /**
-   * Resets password using the reset token.
-   */
   @PostMapping("/reset-password")
   public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
     authService.resetPassword(request);

@@ -8,9 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-/**
- * Profile entity containing additional user information.
- */
 @Entity
 @Table(name = "profiles")
 @Getter

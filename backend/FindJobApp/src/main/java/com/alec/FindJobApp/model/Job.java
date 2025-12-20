@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Job entity representing job postings created by recruiters.
- */
 @Entity
 @Table(name = "jobs")
 @Getter
@@ -84,9 +81,6 @@ public class Job {
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
-  /**
-   * Returns the number of applications for this job.
-   */
   public int getApplicationCount() {
     return applications != null ? applications.size() : 0;
   }

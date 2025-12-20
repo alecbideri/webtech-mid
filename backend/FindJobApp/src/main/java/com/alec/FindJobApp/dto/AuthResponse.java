@@ -6,9 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO for authentication responses containing JWT token.
- */
 @Data
 @Builder
 @NoArgsConstructor
@@ -24,7 +21,6 @@ public class AuthResponse {
   private String lastName;
   private Role role;
 
-  // Flags for special auth flows
   @Builder.Default
   private Boolean requires2FA = false;
   @Builder.Default

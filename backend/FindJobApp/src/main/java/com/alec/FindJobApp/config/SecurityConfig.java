@@ -30,10 +30,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Security configuration for the application.
- * Configures JWT authentication, OAuth2, CORS, and role-based access control.
- */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -55,39 +51,26 @@ public class SecurityConfig {
   @Value("${app.oauth2.enabled:false}")
   private boolean oauth2Enabled;
 
-  /**
-   * Configures the security filter chain.
-   */
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .csrf(AbstractHttpConfigurer::disable)
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(auth -> auth
-            // Public endpoints
             .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers("/login/oauth2/**", "/oauth2/**").permitAll()
             .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/jobs/**").permitAll()
-
-            // Admin only endpoints
             .requestMatchers("/api/admin/**").hasRole("ADMIN")
-
-            // Recruiter endpoints
             .requestMatchers(HttpMethod.POST, "/api/jobs/**").hasRole("RECRUITER")
             .requestMatchers(HttpMethod.PUT, "/api/jobs/**").hasRole("RECRUITER")
             .requestMatchers(HttpMethod.DELETE, "/api/jobs/**").hasAnyRole("RECRUITER", "ADMIN")
-
-            // Seeker endpoints
             .requestMatchers(HttpMethod.POST, "/api/applications/**").hasRole("SEEKER")
-
-            // All other requests require authentication
             .anyRequest().authenticated())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider())
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-    // OAuth2 Login Configuration - only if enabled and services are available
     if (oauth2Enabled && customOAuth2UserService != null && oAuth2SuccessHandler != null) {
       http.oauth2Login(oauth2 -> oauth2
           .userInfoEndpoint(userInfo -> userInfo
@@ -98,9 +81,6 @@ public class SecurityConfig {
     return http.build();
   }
 
-  /**
-   * Configures CORS settings.
-   */
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
@@ -114,9 +94,6 @@ public class SecurityConfig {
     return source;
   }
 
-  /**
-   * Configures the authentication provider.
-   */
   @Bean
   public AuthenticationProvider authenticationProvider() {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -125,17 +102,11 @@ public class SecurityConfig {
     return authProvider;
   }
 
-  /**
-   * Configures the authentication manager.
-   */
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
     return config.getAuthenticationManager();
   }
 
-  /**
-   * Configures the password encoder.
-   */
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();

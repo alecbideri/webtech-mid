@@ -5,9 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-/**
- * Entity for storing password reset tokens.
- */
 @Entity
 @Table(name = "password_reset_tokens")
 @Getter
@@ -35,16 +32,10 @@ public class PasswordResetToken {
   @Builder.Default
   private Boolean used = false;
 
-  /**
-   * Checks if the token has expired.
-   */
   public boolean isExpired() {
     return LocalDateTime.now().isAfter(expiryDate);
   }
 
-  /**
-   * Checks if the token is valid (not expired and not used).
-   */
   public boolean isValid() {
     return !isExpired() && !used;
   }

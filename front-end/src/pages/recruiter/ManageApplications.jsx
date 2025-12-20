@@ -5,9 +5,6 @@ import Spinner from '../../components/common/Spinner';
 import applicationService from '../../services/applicationService';
 import jobService from '../../services/jobService';
 
-/**
- * Manage Applications page for recruiters
- */
 export default function ManageApplications() {
   const { jobId } = useParams();
   const [job, setJob] = useState(null);

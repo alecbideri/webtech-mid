@@ -15,9 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Service for job operations.
- */
 @Service
 @RequiredArgsConstructor
 public class JobService {
@@ -25,9 +22,6 @@ public class JobService {
   private final JobRepository jobRepository;
   private final UserService userService;
 
-  /**
-   * Converts Job entity to JobDTO.
-   */
   public JobDTO toDTO(Job job) {
     return JobDTO.builder()
         .id(job.getId())
@@ -48,9 +42,6 @@ public class JobService {
         .build();
   }
 
-  /**
-   * Creates a new job posting.
-   */
   @Transactional
   public JobDTO createJob(JobRequest request) {
     User recruiter = userService.getCurrentUser();
@@ -75,60 +66,38 @@ public class JobService {
     return toDTO(jobRepository.save(job));
   }
 
-  /**
-   * Gets a job by ID.
-   */
   public Job getJobById(Long id) {
     return jobRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Job", "id", id));
   }
 
-  /**
-   * Gets a job DTO by ID.
-   */
   public JobDTO getJobDTOById(Long id) {
     return toDTO(getJobById(id));
   }
 
-  /**
-   * Gets all jobs with pagination.
-   */
   public Page<JobDTO> getAllJobs(Pageable pageable) {
     return jobRepository.findAll(pageable).map(this::toDTO);
   }
 
-  /**
-   * Gets all open jobs.
-   */
   public Page<JobDTO> getOpenJobs(Pageable pageable) {
     return jobRepository.findByStatusOrderByCreatedAtDesc(JobStatus.OPEN, pageable)
         .map(this::toDTO);
   }
 
-  /**
-   * Searches jobs by keyword.
-   */
   public Page<JobDTO> searchJobs(String keyword, Pageable pageable) {
     return jobRepository.searchJobs(keyword, pageable).map(this::toDTO);
   }
 
-  /**
-   * Gets jobs posted by the current recruiter.
-   */
   public Page<JobDTO> getMyJobs(Pageable pageable) {
     User recruiter = userService.getCurrentUser();
     return jobRepository.findByRecruiter(recruiter, pageable).map(this::toDTO);
   }
 
-  /**
-   * Updates a job posting.
-   */
   @Transactional
   public JobDTO updateJob(Long id, JobRequest request) {
     Job job = getJobById(id);
     User currentUser = userService.getCurrentUser();
 
-    // Verify ownership
     if (!job.getRecruiter().getId().equals(currentUser.getId())
         && currentUser.getRole() != Role.ADMIN) {
       throw new BadRequestException("You can only update your own jobs");
@@ -149,15 +118,11 @@ public class JobService {
     return toDTO(jobRepository.save(job));
   }
 
-  /**
-   * Updates job status.
-   */
   @Transactional
   public JobDTO updateJobStatus(Long id, JobStatus status) {
     Job job = getJobById(id);
     User currentUser = userService.getCurrentUser();
 
-    // Verify ownership
     if (!job.getRecruiter().getId().equals(currentUser.getId())
         && currentUser.getRole() != Role.ADMIN) {
       throw new BadRequestException("You can only update your own jobs");
@@ -167,15 +132,11 @@ public class JobService {
     return toDTO(jobRepository.save(job));
   }
 
-  /**
-   * Deletes a job posting.
-   */
   @Transactional
   public void deleteJob(Long id) {
     Job job = getJobById(id);
     User currentUser = userService.getCurrentUser();
 
-    // Verify ownership or admin
     if (!job.getRecruiter().getId().equals(currentUser.getId())
         && currentUser.getRole() != Role.ADMIN) {
       throw new BadRequestException("You can only delete your own jobs");

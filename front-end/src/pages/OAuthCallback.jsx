@@ -3,9 +3,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Spinner from '../components/common/Spinner';
 
-/**
- * OAuth Callback page - handles redirect from OAuth provider
- */
 export default function OAuthCallback() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -20,7 +17,6 @@ export default function OAuthCallback() {
     const role = searchParams.get('role');
 
     if (token && id && email) {
-      // Store auth data
       localStorage.setItem('token', token);
       const user = {
         id: parseInt(id),
@@ -31,12 +27,10 @@ export default function OAuthCallback() {
       };
       localStorage.setItem('user', JSON.stringify(user));
 
-      // Update auth context
       if (setUser) {
         setUser(user);
       }
 
-      // Redirect based on role
       setTimeout(() => {
         if (role === 'ADMIN') {
           navigate('/admin/dashboard');
@@ -47,7 +41,6 @@ export default function OAuthCallback() {
         }
       }, 500);
     } else {
-      // No token received, redirect to login with error
       navigate('/login?error=oauth_failed');
     }
   }, [searchParams, navigate, setUser]);

@@ -15,9 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-/**
- * Controller for job application endpoints.
- */
 @RestController
 @RequestMapping("/api/applications")
 @RequiredArgsConstructor
@@ -25,9 +22,6 @@ public class ApplicationController {
 
   private final ApplicationService applicationService;
 
-  /**
-   * Applies for a job (Seeker only).
-   */
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   @PreAuthorize("hasRole('SEEKER')")
   public ResponseEntity<ApiResponse<ApplicationDTO>> applyForJob(
@@ -38,9 +32,6 @@ public class ApplicationController {
     return ResponseEntity.ok(ApiResponse.success("Application submitted successfully", application));
   }
 
-  /**
-   * Gets the current seeker's applications.
-   */
   @GetMapping("/my-applications")
   @PreAuthorize("hasRole('SEEKER')")
   public ResponseEntity<ApiResponse<Page<ApplicationDTO>>> getMyApplications(
@@ -48,9 +39,6 @@ public class ApplicationController {
     return ResponseEntity.ok(ApiResponse.success(applicationService.getMyApplications(pageable)));
   }
 
-  /**
-   * Gets applications for a specific job (Recruiter only).
-   */
   @GetMapping("/job/{jobId}")
   @PreAuthorize("hasRole('RECRUITER')")
   public ResponseEntity<ApiResponse<Page<ApplicationDTO>>> getApplicationsForJob(
@@ -59,9 +47,6 @@ public class ApplicationController {
     return ResponseEntity.ok(ApiResponse.success(applicationService.getApplicationsForJob(jobId, pageable)));
   }
 
-  /**
-   * Updates application status (Recruiter only).
-   */
   @PatchMapping("/{id}/status")
   @PreAuthorize("hasRole('RECRUITER')")
   public ResponseEntity<ApiResponse<ApplicationDTO>> updateApplicationStatus(
@@ -72,9 +57,6 @@ public class ApplicationController {
     return ResponseEntity.ok(ApiResponse.success("Application status updated", application));
   }
 
-  /**
-   * Withdraws an application (Seeker only).
-   */
   @DeleteMapping("/{id}")
   @PreAuthorize("hasRole('SEEKER')")
   public ResponseEntity<ApiResponse<Void>> withdrawApplication(@PathVariable Long id) {

@@ -3,9 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import GoogleLoginButton from '../components/common/GoogleLoginButton';
 
-/**
- * Register page component
- */
 export default function Register() {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -39,7 +36,6 @@ export default function Register() {
       const { confirmPassword, ...userData } = formData;
       const result = await register(userData);
       if (result.success) {
-        // Redirect based on role
         const role = result.data.role;
         if (role === 'RECRUITER') {
           navigate('/recruiter/dashboard');
@@ -77,7 +73,6 @@ export default function Register() {
             </div>
           )}
 
-          {/* Google Sign-Up */}
           <div className="mb-6">
             <GoogleLoginButton text="Sign up with Google" />
             <p className="text-xs text-slate-500 mt-2 text-center">
@@ -85,7 +80,6 @@ export default function Register() {
             </p>
           </div>
 
-          {/* Divider */}
           <div className="relative mb-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200"></div>
@@ -211,4 +205,3 @@ export default function Register() {
     </div>
   );
 }
-
